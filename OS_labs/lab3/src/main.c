@@ -17,7 +17,6 @@ typedef struct args {
 } args;
 
 void *dice_roll(void *arg) {
-    printf("thread start\n");
     args Args = *((args*)arg);
     int roll1, roll2, roll3, roll4;
     int sum1 = Args.p1, sum2 = Args.p2;
@@ -40,7 +39,6 @@ void *dice_roll(void *arg) {
         b += 1;
         pthread_mutex_unlock(&mutex);
     }
-    printf("thread end\n");
     return NULL;
 }
 
@@ -62,9 +60,7 @@ int main() {
         pthread_mutex_lock(&init_m);
         Args.seed = (time(0) + i);
         pthread_create(&threads[i], NULL, &dice_roll, &Args);
-        printf("start waiting for thread signal\n");
         pthread_cond_wait(&cv, &init_m);
-        printf("stop waiting\n");
         pthread_mutex_unlock(&init_m);
     }
     for (int i = 0; i < tests; ++i) {
